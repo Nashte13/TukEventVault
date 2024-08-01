@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">TukEventVault Blog</h1>
+    
+    <div class="blog-list">
+        {% for blog in blogs %}
+        <div class="blog-card">
+            {% if blog.image %}
+            <img src="{{ blog.image.url }}" alt="{{ blog.title }}" class="blog-image">
+            {% endif %}
+            <h2>{{ blog.title }}</h2>
+            <p class="blog-meta">By {{ blog.author.username }} | {{ blog.created_at|date:"F d, Y" }}</p>
+            <p class="blog-excerpt">{{ blog.content|truncatewords:30 }}</p>
+            <a href="{% url 'blog_detail' blog.id %}" class="cta-button">Read More</a>
+        </div>
+        {% empty %}
+        <p>No blog posts available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

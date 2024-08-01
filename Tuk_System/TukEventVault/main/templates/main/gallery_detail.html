@@ -1,0 +1,259 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="gallery-detail">
+    <h2>{{ gallery.title }}</h2>
+    <p class="gallery-description">{{ gallery.description }}</p>
+    
+    <div class="gallery-grid">
+        {% for item in gallery.items.all %}
+            <div class="gallery-item">
+                {% if item.is_video %}
+                    <video width="100%" controls>
+                        <source src="{{ item.file.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% else %}
+                    <img src="{{ item.file.url }}" alt="{{ item.title }}" width="100%">
+                {% endif %}
+                <div class="item-actions">
+                    <a href="{% url 'download_gallery_item' item.id %}" class="btn btn-primary">Download</a>
+                    <button class="btn btn-secondary share-btn" data-url="{{ request.build_absolute_uri }}">Share</button>
+                    <button class="btn btn-info view-btn" data-src="{{ item.file.url }}">View</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Share Modal -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Share this item</h3>
+        <div class="share-buttons">
+            <button onclick="shareOn('facebook')" class="btn btn-facebook">Share on Facebook</button>
+            <button onclick="shareOn('twitter')" class="btn btn-twitter">Share on Twitter</button>
+            <button onclick="shareOn('linkedin')" class="btn btn-linkedin">Share on LinkedIn</button>
+        </div>
+    </div>
+</div>
+
+<!-- View Modal -->
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <img id="modalImage" src="" alt="Full size image" style="width:100%;">
+    </div>
+</div>
+
+<script>
+// Share functionality
+var shareModal = document.getElementById("shareModal");
+var shareButtons = document.getElementsByClassName("share-btn");
+var shareUrl = "";
+
+for (var i = 0; i < shareButtons.length; i++) {
+    shareButtons[i].onclick = function() {
+        shareModal.style.display = "block";
+        shareUrl = this.getAttribute("data-url");
+    }
+}
+function shareOn(platform) {
+    var url = "";
+    switch(platform) {
+        case 'facebook':
+            url = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl);
+            break;
+        case 'twitter':
+            url = "https://twitter.com/intent/tweet?url=" + encodeURIComponent(shareUrl);
+            break;
+        case 'linkedin':
+            url = "https://www.linkedin.com/shareArticle?mini=true&url=" + encodeURIComponent(shareUrl);
+            break;
+    }
+    window.open(url, '_blank');
+}
+// View functionality
+var viewModal = document.getElementById("viewModal");
+var viewButtons = document.getElementsByClassName("view-btn");
+var modalImg = document.getElementById("modalImage");
+
+for (var i = 0; i < viewButtons.length; i++) {
+    viewButtons[i].onclick = function() {
+        viewModal.style.display = "block";
+        modalImg.src = this.getAttribute("data-src");
+    }
+}
+// Close modal functionality
+var spans = document.getElementsByClassName("close");
+for (var i = 0; i < spans.length; i++) {
+    spans[i].onclick = function() {
+        shareModal.style.display = "none";
+        viewModal.style.display = "none";
+    }
+}
+
+window.onclick = function(event) {
+    if (event.target == shareModal) {
+        shareModal.style.display = "none";
+    }
+    if (event.target == viewModal) {
+        viewModal.style.display = "none";
+    }
+}
+</script>
+
+<style>
+    .gallery-detail {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.gallery-detail h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.gallery-description {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.gallery-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-item img, .gallery-item video {
+    display: block;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.item-actions {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.btn-facebook {
+    background-color: #3b5998;
+    color: white;
+}
+
+.btn-twitter {
+    background-color: #1da1f2;
+    color: white;
+}
+
+.btn-linkedin {
+    background-color: #0077b5;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .item-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .item-actions .btn {
+        margin-bottom: 10px;
+    }
+}
+</style>
+{% endblock %}

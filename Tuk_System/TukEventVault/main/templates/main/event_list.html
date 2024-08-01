@@ -1,0 +1,24 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">TukEventVault Events</h1>
+    
+    <div class="event-list">
+        {% for event in events %}
+        <div class="event-card">
+            <h2>{{ event.title }}</h2>
+            <p class="event-date">{{ event.date|date:"F d, Y" }}</p>
+            <p class="event-type">{{ event.get_event_type_display }}</p>
+            <p class="event-description">{{ event.description|truncatewords:30 }}</p>
+            <a href="{% url 'event_detail' event.id %}" class="cta-button">View Details</a>
+        </div>
+        {% empty %}
+        <p>No events available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

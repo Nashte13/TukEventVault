@@ -1,0 +1,31 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="search-results">
+    <h2>Search Results for "{{ query }}"</h2>
+
+    <h3>Events</h3>
+    {% if events %}
+        <ul>
+        {% for event in events %}
+            <li><a href="{% url 'event_detail' event.id %}">{{ event.title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No events found.</p>
+    {% endif %}
+
+    <h3>Blogs</h3>
+    {% if blogs %}
+        <ul>
+        {% for blog in blogs %}
+            <li><a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No blogs found.</p>
+    {% endif %}
+</div>
+{% endblock %}

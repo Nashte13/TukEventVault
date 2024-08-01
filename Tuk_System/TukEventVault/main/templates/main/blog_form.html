@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}{% if blog %}Edit Blog{% else %}Create Blog{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">{% if blog %}Edit Blog{% else %}Create New Blog Post{% endif %}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="cta-button">{% if blog %}Update{% else %}Create{% endif %} Blog Post</button>
+    </form>
+</div>
+{% endblock %}

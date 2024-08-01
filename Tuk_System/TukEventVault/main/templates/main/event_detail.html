@@ -1,0 +1,61 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="event-detail">
+        <h1 class="page-title">{{ event.title }}</h1>
+        <p class="event-date">{{ event.date|date:"F d, Y" }}</p>
+        <p class="event-type">{{ event.get_event_type_display }}</p>
+        <div class="event-description">
+            {{ event.description|linebreaks }}
+        </div>
+        
+        <h2>Event Data</h2>
+        <div class="event-data-list">
+            {% for data in event_data %}
+            <div class="event-data-item">
+                <p>{{ data.get_file_type_display }}: <a href="{{ data.file.url }}" target="_blank">View/Download</a></p>
+            </div>
+            {% empty %}
+            <p>No data available for this event.</p>
+            {% endfor %}
+        </div>
+        
+        <!-- Social Sharing Buttons -->
+        <div class="social-sharing">
+            <h3>Share this event:</h3>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-button facebook">Facebook</a>
+            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ event.title }}" target="_blank" class="share-button twitter">Twitter</a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ event.title }}" target="_blank" class="share-button linkedin">LinkedIn</a>
+        </div>
+        
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <h2>Comments</h2>
+            {% for comment in comments %}
+            <div class="comment">
+                <p class="comment-author">{{ comment.user.username }} said:</p>
+                <p class="comment-content">{{ comment.content }}</p>
+                <p class="comment-date">{{ comment.created_at|date:"F d, Y H:i" }}</p>
+            </div>
+            {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+            {% endfor %}
+            
+            {% if user.is_authenticated %}
+            <h3>Add a comment</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" class="cta-button">Post Comment</button>
+            </form>
+            {% else %}
+            <p>Please <a href="{% url 'login' %}">login</a> to leave a comment.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

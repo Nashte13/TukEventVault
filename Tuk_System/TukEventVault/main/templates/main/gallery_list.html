@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Event Galleries{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Event Galleries</h1>
+    
+    <div class="gallery-grid">
+        {% for event in events %}
+        <div class="gallery-card">
+            <h2>{{ event.title }}</h2>
+            <p>{{ event.date|date:"F d, Y" }}</p>
+            <a href="{% url 'gallery_detail' event.id %}" class="cta-button">View Gallery</a>
+        </div>
+        {% empty %}
+        <p>No galleries available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

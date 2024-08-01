@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Welcome to TukEventVault</h1>
+    <p>Your digital archive for Technical University of Kenya events</p>
+</div>
+
+<section class="about-section">
+    <h2>About TukEventVault</h2>
+    <p>TukEventVault is a comprehensive digital archive system designed for the Technical University of Kenya. It serves as a repository for various university events, including graduations, learning sessions, cultural celebrations, and more.</p>
+</section>
+
+<section class="features-section">
+    <h2>What We Offer</h2>
+    <ul>
+        <li>Event Archives: Browse through past and upcoming university events</li>
+        <li>Blog: Stay updated with the latest university news and articles</li>
+        <li>Gallery: Explore photos and videos from various events</li>
+        <li>User Interaction: Comment, share, and download content (login required)</li>
+    </ul>
+</section>
+
+<section class="cta-section">
+    <h2>Start Exploring</h2>
+    <p>Discover the rich history and vibrant present of the Technical University of Kenya.</p>
+    <a href="{% url 'event_list' %}" class="cta-button">View Events</a>
+</section>
+
+<form action="{% url 'search' %}" method="get" class="search-form">
+    <input type="text" name="q" placeholder="Search events, blogs, and more...">
+    <button type="submit">Search</button>
+</form>
+{% endblock %}
